@@ -1,16 +1,19 @@
 "use client";
-import { useEffect, useState } from "react";
+import { SignOutButton, useUser } from "@clerk/nextjs";
 import { Container, Typography } from "@mui/material";
+import { useEffect, useState } from "react";
+import Auth from "./components/auth/Auth";
 import Chat from "./components/chat/Chat";
 import ChatInput from "./components/chat/ChatInput";
 import { Message } from "./models/Message";
 
 export default function Home() {
+  const { isSignedIn } = useUser();
   const [messages, setMessages] = useState<Message[]>([]);
   const [newMessage, setNewMessage] = useState<string>("");
   const [currentlyEditing, setCurrentlyEditing] = useState<string | null>(null);
   const [editedText, setEditedText] = useState<string>("");
-  const [pollingInterval, setPollingInterval] = useState(5000);
+  const [pollingInterval, setPollingInterval] = useState(2000);
 
   const fetchMessages = async () => {
     const res = await fetch("/api/messages");
@@ -62,13 +65,12 @@ export default function Home() {
   useEffect(() => {
     fetchMessages();
 
-    // TODO : later, replace by Realtime Cosmosdb pubsub
+    // Optional: Replace this polling with real-time pub/sub in the future
     const interval = setInterval(fetchMessages, pollingInterval);
-
     return () => clearInterval(interval);
   }, []);
 
-  return (
+  return isSignedIn ? (
     <Container
       maxWidth="sm"
       sx={{ height: "100vh", display: "flex", flexDirection: "column" }}
@@ -76,6 +78,7 @@ export default function Home() {
       <Typography variant="h4" align="center" gutterBottom>
         Fast Chat
       </Typography>
+      <SignOutButton />
       <Chat
         messages={messages}
         currentlyEditing={currentlyEditing}
@@ -92,5 +95,7 @@ export default function Home() {
         onMessageSend={addMessage}
       />
     </Container>
+  ) : (
+    <Auth />
   );
 }

@@ -1,0 +1,5 @@
+# Ignore config and JSON files
+package.json
+.eslintrc.json
+tsconfig.json
+yarn.lock
