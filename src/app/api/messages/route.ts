@@ -1,3 +1,4 @@
+// api/messages/route.ts
 import { Container, CosmosClient, ItemResponse } from "@azure/cosmos";
 import { NextRequest, NextResponse } from "next/server";
 import { v4 as uuidv4 } from "uuid";

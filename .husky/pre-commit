@@ -1,0 +1,1 @@
+yarn lint && lint-staged --quiet && yarn compile
